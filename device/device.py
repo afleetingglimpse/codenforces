@@ -1,9 +1,7 @@
 import base64
-from hashlib import sha256
 import hashlib
 import json
 import os
-from random import randrange
 import random
 import subprocess
 import time
@@ -29,7 +27,7 @@ CONTENT_HEADER = {"Content-Type": "application/json"}
 NEW_FW_PATHNAME = "/storage/new.txt"
 
 
-#логгирование событий
+# логгирование событий
 def log(msg):
     try:
         print(msg)
@@ -58,21 +56,8 @@ def send_data_to_server(msg):
         print(f'[error] delivery failed, exception {e}')
 
 
-#входной генератор значений, пишет сюда же
-def useful_load(timeout, max):
-    global event
-    while not event.is_set():
-        time.sleep(timeout)
-        data = {"value": randrange(max)}
-        response = requests.post(
-            "http://device:6064/data",
-            data=json.dumps(data),
-            headers=CONTENT_HEADER,
-        )
-
-
-#диагностика, очень лаконично для примера
-def diagnostic():
+# заглушка логики контроля параметров прикладной программы
+def settings_sanity_check():
     result = random.choices([True, False], weights=[90, 10])
     log("Diagnostic ended with status: " + str(result))
     return result
@@ -83,19 +68,11 @@ def cron(t):
     global key, event
     while not event.is_set():
         time.sleep(t)
-        key = crypto()
-        check_status = diagnostic()
+        check_status = settings_sanity_check()
         check_status = str(check_status)
         out_d("send_diagnostic", "Checked with status: " + check_status)
-        out_d("send_key", key)
 
 
-#генератор ключей
-def crypto():
-    key = uuid4().__str__()
-    log("Key regenerated")
-    print("[NEW KEY] " + key)
-    return key
 
 
 #вычислитель хеша
@@ -127,7 +104,7 @@ def out_b():
     )
 
 
-#цифровой порт, вот сюда можно передавать url наружу для тестов, но сюда по логике работы системы идет не все и поэтому будет не идеально
+#цифровой порт
 def out_d(operation, msg):
     if operation == 'send_data':
         data = {"value": msg}
@@ -205,9 +182,8 @@ def start():
         settings = open('/storage/settings.txt', 'r')
         data = json.load(settings)
         url = data['output']
-        #здесь были проверки настроек на адекватность
 
-        check_success = diagnostic()
+        check_success = settings_sanity_check()
 
         #успешная загрузка
         if check_success:
@@ -218,8 +194,6 @@ def start():
             key = '12345'
             level = data['alarm_level']
 
-            threading.Thread(target=lambda: useful_load(
-                data['timeout'], data['max'])).start()
             threading.Thread(
                 target=lambda: cron(3 * data['timeout'] + 1)).start()
 
@@ -268,15 +242,14 @@ def key_in():
     global key_t, key_s, key
     content = request.json
     try:
-        if content['name'] == 'S':
+        if content['name'] == 'Security':
             key_s = True
-        if content['name'] == 'T':
+        if content['name'] == 'Technical':
             key_t = True
         log("Key input event: " + str(content['name']))
 
         if key_t and key_s:
             log("Service input port activated")
-            #здесь была остановка лога
             payload_n = ''
             payload_s = ''
             request_url = 'http://file_server:6001/download-update/new.txt'
@@ -306,20 +279,20 @@ def key_out():
     global key_t, key_s
     content = request.json
     try:
-        if content['name'] == 'S':
+        if content['name'] == 'Security':
             key_s = False
-        if content['name'] == 'T':
+        if content['name'] == 'Technical':
             key_t = False
         log("Key output event: " + str(content['name']))
 
         if not key_s and not key_t:
             log("Service input port deactivated")
-            #здесь было обратное включение лога
     except Exception as e:
         log(f"exception raised {e}")
         error_message = f"malformed request {request.data}"
         return error_message, 400
     return jsonify({"operation": "key in ", "status": True})
 
-if __name__ == "__main__":        
-    app.run(port = port, host=host_name)
+
+if __name__ == "__main__":
+    app.run(port=port, host=host_name)

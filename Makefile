@@ -1,10 +1,16 @@
+all: prepare build run delay5s test
+
+delay5s:
+	# can be used to let components start working
+	sleep 5
+
 sys-packages:
-	# sudo apt install -y docker-compose
+	sudo apt install -y docker-compose
 	sudo apt install python3-pip -y
 	sudo pip3 install pipenv
 
 pipenv:
-	pipenv install -r requirements.txt -r requirements-dev.txt	
+	pipenv install -r requirements-dev.txt	
 
 prepare: clean sys-packages pipenv build
 
@@ -34,4 +40,4 @@ test:
 
 
 clean:
-	rm -rf Pipfile*
+	docker-compose down; pipenv --rm; rm -rf Pipfile*; echo cleanup complete

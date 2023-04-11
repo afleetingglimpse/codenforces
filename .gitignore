@@ -3,4 +3,5 @@ __pycache__
 *.pyc
 Pipfile*
 storage/*
+.vscode
 .idea

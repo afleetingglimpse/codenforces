@@ -1,30 +1,87 @@
-# Disclaimer 
+# Условия использования 
 
-This is a demo project and shall not be used in production.
-The code is distributed under MIT license (see the LICENSE file).
+Применять только в учебных целях. Данных код может содержать ошибки, авторы не несут никакой ответственности за любые последствия использования этого кода.
+Условия использования и распространения - MIT лицензия (см. файл LICENSE).
+
+## Настройка и запуск
+
+### Системные требования
+
+Данный пример разработан и проверен на ОС Ubuntu 20.04.5, авторы предполагают, что без каких-либо изменений этот код может работать на любых Debian-подобных OS, для других Linux систем, а также для MAC OS необходимо использовать другой менеджер пакетов. В Windows необходимо самостоятельно установить необходимое ПО или воспользоваться виртуальной машиной с Ubuntu (также можно использовать WSL версии не ниже 2).
+
+Описание настройки инфраструктуры для разработки можно найти во втором разделе короткого курса на степике https://stepik.org/course/133991/ 
+
+### Используемое ПО
+
+Стандартный способ запуска демо предполагает наличие установленного пакета *docker*, а также *docker-compose*. Для автоматизации типовых операций используется утилита *make*, хотя можно обойтись и без неё, вручную выполняя соответствующие команды из файла Makefile в командной строке.
+
+Другое используемое ПО (в Ubuntu будет установлено автоматически, см. следующий раздел):
+- python (желательно версия не ниже 3.8)
+- pipenv (для виртуальных окружений python)
+
+Для работы с кодом примера рекомендуется использовать VS Code или PyCharm.
+
+В случае использования VS Code следует установить расширения
+- REST client
+- Docker
+- Python
+
+### Настройка окружения и запуск примера
+
+В терминале перейдите в папку проекта и выполните команду
+
+```bash
+make all
+```
+
+В результате будет создано виртуальное окружение для этого проекта, собраны необходимые docker образы, запущен пример и автоматический тест.
+
+Вывод должен быть похож на изображённый в следующей картинке, числа могут отличаться, т.к. генерируются случайным образом.
+
+![Результат выполнения команды](./docs/images/run-results.png)
+
+### REST запросы
+
+Для ручного тестирования в VS Code откройте файл requests.rest, при наведении мышкой на GET и POST запросы появится текст 'Send request', при нажатии на него запрос будет выполнен.
+
+Диаграмма последовательности данного примера имеет следующий вид:
+
+![Диаграмма последовательности](./docs/images/nf.png)
+
+[Cсылка на диаграмму для редактирования](//www.plantuml.com/plantuml/uml/N8f12iD024NtSuevIc_G8mGnFo0aewWDzFQjp6hYol_UUqMIv-SwMoDEzJxlRN2gIT6rsJyH5gEHVSSjZEBpM-GX9xQ0t_0gZbYikIOuHSSMtqXSrTZQ1DDEnHyOurTQ5UH63GJ1-xnYxei_m07n699Jn4Ro1-A5nIiPaGiI28b0o0SS4fE9ZUqlTF-8wcwpzjfUoL4ETYOptTLLNJtUsDZOohcrZrvr55QhbvwkUKCvN_36sMP_ZCCVV44D_QO2VqlAFTMKKqM1KpoN7cUtL6j4HGLMWHxTsNfzxkbgV89mpNwaUzdWRAxUTyt89RQLqhoZW0sKTYTdySaafUT_9EdjczaSyFXB3PW4hEw4A2V02Pfa0cuueHR2Tt8w1p9HI8Ndzwgmakqnct1KmWs8v0CKW-MCjmU0Bu2eJXJq8BHXsZkin1TmRV3ghCmWBgZspWiS6zDQsoJT0lb6mftDnMhLBGw8VKPSBLvHiM0wEeGeqh9sNAYEdKaRec1-TVn-MH1mxgOc8sJ4uh-efxiwG4NiJsaYsbVnHstQnft788v7IkpBpBhirWTblm7a4wSUE0Ll9OHJh18gHPJwehvze62NntoQHpaI3ES1HBTgVOD_SavwVGDjfzQoBqYswKjcBYbVkjDuUkyu6qmmPtfTfO3W8B7q560gNI4vYXPzBLfrenKL5FRGow_ODGHiTLhhqUMmrWuXbr-k-NnOFhBaAprOppZjiqlpYV9d-Bq4_5bZCBRa7az5V_Q5-Wy0PqwLkzTuuzVi7m00)
 
 
-## Running the demo
+В соответствии с ней, логическая последовательность команд следующая: start -> { 2 * key_in (Не важен порядок) -> { 2 * key_out (Извлекать их не обязательно для завершения обновления, но желательно для корректной обработки состояний системы) }} -> stop
 
-There is the main options for running the demo:
-- containerized (using docker containers)
+_Start_ загрузит приложение, уставки, настройки.
 
-There shall be docker-compose locally available.
+_Key in_ имитирует подключение аппаратного ключа, ключей два - Security - для специалиста по безопасности, Technical - для техника. 
 
-### Running complete demo in containerized mode
+Процесс обновления начинается в тот момент, когда оба ключа оказываются активированы.
 
-execute in VS Code terminal window either
-- _make run_
-- or _docker-compose up_
+_Key out_ имитирует извлечение ключа, что необходимо для корректного отображения состояния системы и ее продолжительной работы без перезапусков через start/stop.
 
-then open the requests.rest file in Visual Studio Code editor. If you have the REST client extension installed, you will see 'Send request' active text above GET or POST requests, you can click on it.
+_Stop_ останавливает все внутренние процессы и очищает значение переменных.
 
-Logical order of requests is next: start -> { key_in -> key_in -> { key_out -> key_out }} -> stop
+## Примечания
 
-_Start_ command will load app, preset values, load settings from sources.
+В данном примере не используется брокер сообщений, взаимодействие между системами построено на базе REST запросов, однако в решении _внутренние_ компоненты проектируемого устройства должны взаимодействовать через брокер сообщений Apache Kafka, _внешнее_ взаимодействие следует по-прежнему через REST. 
 
-_Key in_ uses instead of hardware signal, there're two keys: "S" and "T" for secure- and technical specialists. 
+Пример такой реализации можно найти в репозитории https://github.com/sergey-sobolev/secure-update, подробное описание запуска примера есть на степике (https://stepik.org/course/133991/)
 
-The update process will start after both keys are activated and it will stop after both keys are activated.
+Хотя код этого примера написан на Python, команды могут по желанию своё решение сделать на других языках (C/C++, C#, Golang, Javascript/Typescript, Java, Rust, PHP), основные требования:
+1. использование брокера сообщений (предпочтительно Kafka, но можно RabbitMQ, Mosquitto)
+2. наличие хотя бы одного функционального теста
+3. наличие тестов безопасности (предпочтительно автоматизированных, в крайнем случае - описание ручных тестов безопасности)
+4. наличие монитора безопасности, который должен контролировать все взаимодействия между доменами безопасности
+5. наличие политик безопасности, которые использует монитор безопасности. Политики безопасности должны обеспечивать реализацию предложенной политики архитектуры.
 
-_Stop_ command will terminate all subrocesses in app and clear variables, so we recommend to use it after each logically unique using of app.
+## Дополнительные материалы по кибериммунной разработке
+
+- Видео на youtube (записи занятий)
+  - Теория https://youtu.be/hTDBLP1Jlc0 
+  - Разбор домашнего задания на проектирование; ключевые принципы и технологии работы кибериммунных систем https://youtu.be/eYr-toUUQDA
+  - Пошаговый разбор трансформации примера в новую систему https://youtu.be/BH2HrPltr7M
+  - Тестирование, в т.ч. тесты безопасности https://youtu.be/BEVZVm6xi-M 
+- Github wiki по теме со ссылками на примеры и решения на Python и Java https://github.com/sergey-sobolev/cyberimmune-systems/wiki/%D0%9A%D0%B8%D0%B1%D0%B5%D1%80%D0%B8%D0%BC%D0%BC%D1%83%D0%BD%D0%B8%D1%82%D0%B5%D1%82
+- заготовка описания решения команды https://github.com/sergey-sobolev/secure-update/blob/main/docs/report/report.md
