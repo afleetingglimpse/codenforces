@@ -1,22 +1,31 @@
 package ru.codenforces.demo.model;
 
 public class Data {
-    public boolean isDigital;
-    public String value;
+    private String operation;
+    private boolean status;
+    private int value;
 
-    public boolean isDigital() {
-        return isDigital;
+    public String getOperation() {
+        return operation;
     }
 
-    public void setDigital(boolean digital) {
-        isDigital = digital;
+    public void setOperation(String operation) {
+        this.operation = operation;
     }
 
-    public String getValue() {
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+    public int getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(int value) {
         this.value = value;
     }
 }
