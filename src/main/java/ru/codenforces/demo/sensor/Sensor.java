@@ -9,6 +9,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 public class Sensor {
@@ -41,7 +42,7 @@ public class Sensor {
                 System.out.println("Request sent");
             }
             catch (IOException e) {
-                System.out.println(e.getMessage());
+                System.out.println(Arrays.asList(e.getStackTrace()));//
                 // logger here
             }
         }
