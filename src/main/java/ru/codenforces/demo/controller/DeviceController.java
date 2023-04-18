@@ -1,5 +1,6 @@
 package ru.codenforces.demo.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,13 +8,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.codenforces.demo.model.Data;
 import ru.codenforces.demo.model.Key;
 import ru.codenforces.demo.model.SensorData;
+import ru.codenforces.demo.service.DeviceMsgSender;
+
+import java.util.Date;
+import java.util.logging.Logger;
 
 
 @RestController
 @RequestMapping(path = "/")
 public class DeviceController {
+
+    @Autowired
+    private DeviceMsgSender deviceMsgSender;
 
     @Value("${sensor.threshold}")
     private int threshold;
@@ -25,6 +34,8 @@ public class DeviceController {
     private final String securityName = "Security";
     private boolean technicalKey;
     private final String technicalName = "Technical";
+
+    public static final Logger LOGGER = Logger.getLogger(DeviceMsgSender.class.getName());
 
 
     @PostMapping("/stop") // later
@@ -59,13 +70,21 @@ public class DeviceController {
     public void handleSensorRequest(@RequestBody SensorData sensorData) {
 
         try {
-            if (sensorData.getData() > threshold) {
-                // send alarm
-                // log
+            int sensorValue = sensorData.getValue();
+            Data data = new Data();
+
+            if (sensorValue > threshold) {
+                LOGGER.warning(String.format("Alarm with level %d", sensorValue));
+                data.setStatus(true);
+                deviceMsgSender.sendProtectionContactData(data);
             }
             else {
-                // send message that all is fine
-                // log
+                data.setOperation("send_data");
+                data.setValue(sensorValue);
+                deviceMsgSender.sendDigitalData(data);
+                // LOGGER.info("Data sent to digital port");
+                deviceMsgSender.sendAnalogData(data);
+                // LOGGER.info("Data sent to analog port");
             }
         }
         // Insert needed exception

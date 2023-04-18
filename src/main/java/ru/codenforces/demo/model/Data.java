@@ -28,4 +28,5 @@ public class Data {
     public void setValue(int value) {
         this.value = value;
     }
+
 }
