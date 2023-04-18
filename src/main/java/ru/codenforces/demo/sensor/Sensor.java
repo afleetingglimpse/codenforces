@@ -1,53 +1,58 @@
 package ru.codenforces.demo.sensor;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.http.*;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import ru.codenforces.demo.Utils;
+import ru.codenforces.demo.service.DeviceMsgSender;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.FileInputStream;
+import java.io.IOException;
+
+import java.io.InputStream;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
-@Component
-@PropertySource("application.properties")
+import static java.net.URI.create;
 public class Sensor {
+    private static final long DELIVERY_INTERVAL_MILLISEC = 500;
+    private static final int SIGNAL_RANGE = 20;
+    // тут кринж
+    //"http://localhost:8080/signals";
+    public static final Logger LOGGER = Logger.getLogger(DeviceMsgSender.class.getName());
+    private static final String URI = Utils.getProperty("sensor.uri");
 
-    //CONTENT_HEADER = {"Content-Type": "application/json"}
-    //private final double DELIVERY_INTERVAL_SEC = 0.5;
-    private final long DELIVERY_INTERVAL_MILLISEC = 500;
-    private final int SIGNAL_RANGE = 20;
-
-    @Value("${sensor.url}")
-    private String url;
-    public void startPushing() throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, JsonProcessingException {
         while (true) {
-            TimeUnit.SECONDS.sleep(DELIVERY_INTERVAL_MILLISEC);
+
+            TimeUnit.SECONDS.sleep(DELIVERY_INTERVAL_MILLISEC/1000);
+
             Random random = new Random();
             int data = random.nextInt(SIGNAL_RANGE);
-            List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
-            acceptableMediaTypes.add(MediaType.APPLICATION_JSON);
-            RestTemplate restTemplate = new RestTemplate();
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Content-Type", "application/json");
-            headers.setAccept(acceptableMediaTypes);
+            ObjectMapper objectMapper = new ObjectMapper();
+            String requestBody = objectMapper.writeValueAsString(data);
 
-            HttpEntity<String> entity = new HttpEntity<>(headers);
-
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .setHeader("Content-Type","application/json")
+                    .uri(create(URI))
+                    .build();
             try {
-                ResponseEntity<byte[]> result = restTemplate.exchange(url, HttpMethod.POST, entity, byte[].class, data);
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                LOGGER.warning("Request sent");
             }
-
-            catch (RestClientException exception) {
-                System.out.println(exception.getMessage());
+            catch (IOException e) {
+                LOGGER.warning(Arrays.toString(e.getStackTrace()));
             }
         }
     }
-
-
-
 }
