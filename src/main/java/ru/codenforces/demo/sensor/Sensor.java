@@ -2,23 +2,30 @@ package ru.codenforces.demo.sensor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ru.codenforces.demo.Utils;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 
+import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import static java.net.URI.create;
 public class Sensor {
 
     private static final long DELIVERY_INTERVAL_MILLISEC = 500;
     private static final int SIGNAL_RANGE = 20;
 
     // тут кринж
-    private static final String uri = "http://localhost:8080/signals";
+//    private static final String URI = "http://localhost:8080/signals";
+    private static final String URI = Utils.getProperty("sensor.uri");
 
     public static void main(String[] args) throws InterruptedException, JsonProcessingException {
         while (true) {
@@ -34,7 +41,8 @@ public class Sensor {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
                     .POST(HttpRequest.BodyPublishers.ofString(requestBody))
-                    .uri(URI.create(uri))
+                    .setHeader("Content-Type","application/json")
+                    .uri(create(URI))
                     .build();
             try {
                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
