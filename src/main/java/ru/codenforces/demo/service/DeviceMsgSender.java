@@ -2,6 +2,8 @@ package ru.codenforces.demo.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ru.codenforces.demo.model.Data;
 
 import java.io.IOException;
@@ -13,7 +15,7 @@ import java.util.logging.Logger;
 
 import static ru.codenforces.demo.Utils.getProperty;
 import static java.net.URI.create;
-
+@Service
 public class DeviceMsgSender {
     public static final Logger LOGGER = Logger.getLogger(DeviceMsgSender.class.getName());
     private static final String DEVICE_URI = getProperty("device.uri");
@@ -31,7 +33,7 @@ public class DeviceMsgSender {
                 .build();
         try {
             client.send(request, HttpResponse.BodyHandlers.ofString());
-            LOGGER.warning("Request sent");
+            LOGGER.warning("Request sent by DeviceMsgSender.sendAnalogData");
         }
         catch (IOException | InterruptedException e) {
             LOGGER.warning(Arrays.toString(e.getStackTrace()));
@@ -49,7 +51,7 @@ public class DeviceMsgSender {
                 .build();
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            LOGGER.warning("Request sent");
+            LOGGER.warning("Request sent by DeviceMsgSender.sendProtectionContactData");
         }
         catch (IOException | InterruptedException e) {
             LOGGER.warning(Arrays.toString(e.getStackTrace()));
@@ -77,7 +79,7 @@ public class DeviceMsgSender {
                 .build();
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            LOGGER.warning("Request sent");
+            LOGGER.warning("Request sent by DeviceMsgSender.sendDigitalData");
         }
         catch (IOException | InterruptedException e) {
             LOGGER.warning(Arrays.toString(e.getStackTrace()));
