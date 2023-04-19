@@ -3,16 +3,16 @@ package ru.codenforces.demo.model;
 public class Settings {
     private double timeout;
     private int max;
-    private int alarm_level;
+    private int alarmLevel;
     private String output;
     private String version;
 
     public Settings() {}
 
-    public Settings(double timeout, int max, int alarm_level, String output) {
+    public Settings(double timeout, int max, int alarmLevel, String output) {
         this.timeout = timeout;
         this.max = max;
-        this.alarm_level = alarm_level;
+        this.alarmLevel = alarmLevel;
         this.output = output;
     }
 
@@ -32,12 +32,12 @@ public class Settings {
         this.max = max;
     }
 
-    public int getAlarm_level() {
-        return alarm_level;
+    public int getAlarmLevel() {
+        return alarmLevel;
     }
 
-    public void setAlarm_level(int alarm_level) {
-        this.alarm_level = alarm_level;
+    public void setAlarmLevel(int alarmLevel) {
+        this.alarmLevel = alarmLevel;
     }
 
     public String getOutput() {
@@ -61,7 +61,7 @@ public class Settings {
         return "Settings{" +
                 "timeout=" + timeout +
                 ", max=" + max +
-                ", alarm_level=" + alarm_level +
+                ", alarmLevel=" + alarmLevel +
                 ", output='" + output + '\'' +
                 ", version='" + version + '\'' +
                 '}';
