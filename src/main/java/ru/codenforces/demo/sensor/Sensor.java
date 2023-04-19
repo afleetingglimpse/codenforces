@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.codenforces.demo.Utils;
 import ru.codenforces.demo.service.DeviceMsgSender;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 
@@ -49,8 +48,7 @@ public class Sensor {
             try {
                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
                 LOGGER.warning("Request sent");
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 LOGGER.warning(Arrays.toString(e.getStackTrace()));
             }
         }
