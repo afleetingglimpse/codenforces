@@ -24,7 +24,7 @@ public class ScadaController {
 
         }
     }
-    @PostMapping("/data_a")
+    @PostMapping("/data_analog")
     public ResponseEntity<?> addAnalogData(@RequestBody Data aData) {
         try{
             int dataValue = aData.getValue();
