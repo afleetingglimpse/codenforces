@@ -2,6 +2,8 @@ package ru.codenforces.demo.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ru.codenforces.demo.model.Data;
 
 import java.io.IOException;
@@ -13,14 +15,14 @@ import java.util.logging.Logger;
 
 import static ru.codenforces.demo.Utils.getProperty;
 import static java.net.URI.create;
-
+@Service
 public class DeviceMsgSender {
     public static final Logger LOGGER = Logger.getLogger(DeviceMsgSender.class.getName());
     private static final String DEVICE_URI = getProperty("device.uri");
     private static final String PROTECTION_URI = getProperty("protection.uri");
     private static final String DIGITAL_PORT_URI = getProperty("main.uri");
     //отправка данных в аналог выходной порт
-    private void sendAnalogData(Data data) throws JsonProcessingException {
+    public void sendAnalogData(Data data) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         String requestBody = objectMapper.writeValueAsString(data);
         HttpClient client = HttpClient.newHttpClient();
@@ -31,14 +33,14 @@ public class DeviceMsgSender {
                 .build();
         try {
             client.send(request, HttpResponse.BodyHandlers.ofString());
-            LOGGER.warning("Request sent");
+            LOGGER.warning("Request sent by DeviceMsgSender.sendAnalogData");
         }
         catch (IOException | InterruptedException e) {
             LOGGER.warning(Arrays.toString(e.getStackTrace()));
         }
     }
     //отправка контакта тревоги с защитой
-    private void sendProtectionContactData(Data data) throws JsonProcessingException {
+    public void sendProtectionContactData(Data data) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         String requestBody = objectMapper.writeValueAsString(data);
         HttpClient client = HttpClient.newHttpClient();
@@ -49,19 +51,19 @@ public class DeviceMsgSender {
                 .build();
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            LOGGER.warning("Request sent");
+            LOGGER.warning("Request sent by DeviceMsgSender.sendProtectionContactData");
         }
         catch (IOException | InterruptedException e) {
             LOGGER.warning(Arrays.toString(e.getStackTrace()));
         }
     }
 
-    private void sendDigitalData(Data data) throws JsonProcessingException {
+    public void sendDigitalData(Data data) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         String requestBody = objectMapper.writeValueAsString(data);
         HttpClient client = HttpClient.newHttpClient();
         String digitalEndPoint = null;
-        if(data.getOperation().equals("send_data")){
+        if (data.getOperation().equals("send_data")){
             digitalEndPoint = "data_d";
         } else if (data.getOperation().equals("send_diagnostic")) {
             digitalEndPoint = "diagnostic";
@@ -77,7 +79,7 @@ public class DeviceMsgSender {
                 .build();
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            LOGGER.warning("Request sent");
+            LOGGER.warning("Request sent by DeviceMsgSender.sendDigitalData");
         }
         catch (IOException | InterruptedException e) {
             LOGGER.warning(Arrays.toString(e.getStackTrace()));

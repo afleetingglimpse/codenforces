@@ -1,13 +1,12 @@
 package ru.codenforces.demo.model;
 public class SensorData {
-    int data;
 
-    public int getData() {
-        return data;
+    private int value;
+    public int getValue() {
+        return value;
     }
-
-    public void setData(int data) {
-        this.data = data;
+    public void setValue(int data) {
+        this.value = data;
     }
 
 }
