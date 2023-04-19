@@ -17,7 +17,7 @@ import static ru.codenforces.demo.Utils.getProperty;
 import static java.net.URI.create;
 @Service
 public class DeviceMsgSender {
-    public static final Logger LOGGER = Logger.getLogger(DeviceMsgSender.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(DeviceMsgSender.class.getName());
     private static final String ANALOG_PORT_URI = getProperty("analog.uri");
     private static final String PROTECTION_URI = getProperty("protection.uri");
     private static final String DIGITAL_PORT_URI = getProperty("main.uri");

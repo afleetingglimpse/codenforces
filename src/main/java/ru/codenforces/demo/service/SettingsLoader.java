@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 public class SettingsLoader {
 
     private static final String SETTINGS_FILE_PATH = Utils.getProperty("device.settings.filepath");
-    public static final Logger LOGGER = Logger.getLogger(DeviceMsgSender.class.getName());
+    public static final Logger LOGGER = Logger.getLogger(SettingsLoader.class.getName());
     public Settings loadSettings() {
         Settings settings = new Settings();
         try {
