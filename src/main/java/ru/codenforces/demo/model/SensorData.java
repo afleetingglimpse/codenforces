@@ -2,11 +2,11 @@ package ru.codenforces.demo.model;
 public class SensorData {
 
     private int value;
-    public int getValue() {
-        return value;
-    }
-    public void setValue(int data) {
-        this.value = data;
+    public SensorData() {}
+    public SensorData(int value) {this.value = value;}
+    public int getValue() {return value;}
+    public void setValue(int value) {
+        this.value = value;
     }
 
 }
