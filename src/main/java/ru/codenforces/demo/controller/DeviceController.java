@@ -8,12 +8,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.codenforces.demo.Utils;
 import ru.codenforces.demo.model.Data;
 import ru.codenforces.demo.model.Key;
 import ru.codenforces.demo.model.SensorData;
+import ru.codenforces.demo.model.Settings;
 import ru.codenforces.demo.service.DeviceMsgSender;
+import ru.codenforces.demo.service.SettingsLoader;
 
-import java.util.Date;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.logging.Logger;
 
 
@@ -24,11 +29,11 @@ public class DeviceController {
     @Autowired
     private DeviceMsgSender deviceMsgSender;
 
+    @Autowired
+    private SettingsLoader settingsLoader;
+
     @Value("${sensor.threshold}")
     private int threshold;
-
-    @Value("${device.settingsPath}")
-    private String settingsPath;
 
     private boolean securityKey;
     private final String securityName = "Security";
@@ -50,12 +55,12 @@ public class DeviceController {
         }
     }
 
-    @PostMapping("/start") // later
+    @PostMapping("/start")
     public ResponseEntity<?> handleStartRequest() {
 
         try {
-
-            //
+            Settings settings = settingsLoader.loadSettings();
+            System.out.println(settings);
 
             return new ResponseEntity<>(HttpStatus.OK);
         }
