@@ -8,17 +8,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.codenforces.demo.Utils;
 import ru.codenforces.demo.model.Data;
 import ru.codenforces.demo.model.Key;
 import ru.codenforces.demo.model.SensorData;
 import ru.codenforces.demo.model.Settings;
 import ru.codenforces.demo.service.DeviceMsgSender;
-import ru.codenforces.demo.service.SettingsLoader;
+import ru.codenforces.demo.service.KeyHandler;
+import ru.codenforces.demo.service.SettingsManager;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 
@@ -30,7 +28,10 @@ public class DeviceController {
     private DeviceMsgSender deviceMsgSender;
 
     @Autowired
-    private SettingsLoader settingsLoader;
+    private SettingsManager settingsManager;
+
+    @Autowired
+    private KeyHandler keyHandler;
 
     @Value("${sensor.threshold}")
     private int threshold;
@@ -59,13 +60,19 @@ public class DeviceController {
     public ResponseEntity<?> handleStartRequest() {
 
         try {
-            Settings settings = settingsLoader.loadSettings();
-            System.out.println(settings);
-
+            Settings settings = settingsManager.loadSettings();
+            if (!settingsManager.settingsSanityCheck(settings)) {
+                LOGGER.warning("Error occurred in DeviceController.handleStartRequest");
+                LOGGER.warning("Invalid settings");
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            LOGGER.info(String.format("Loaded version: %s", settings.getVersion()));
+            String key = keyHandler.loadKey();
             return new ResponseEntity<>(HttpStatus.OK);
         }
-        catch (Exception e) {
-            // log("Exception raised")
+        catch (IllegalAccessException e) {
+            LOGGER.warning("Exception raised in DeviceController.handleStartRequest");
+            LOGGER.warning(Arrays.toString(e.getStackTrace()));
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

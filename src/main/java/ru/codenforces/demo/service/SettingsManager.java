@@ -8,13 +8,12 @@ import ru.codenforces.demo.model.Settings;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.logging.Logger;
 
 @Service
-public class SettingsLoader {
+public class SettingsManager {
 
     private static final String SETTINGS_FILE_PATH = Utils.getProperty("device.settings.filepath");
-    public static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(SettingsLoader.class.getName());
+    public static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(SettingsManager.class.getName());
     public Settings loadSettings() {
         Settings settings = new Settings();
         try {
@@ -27,4 +26,20 @@ public class SettingsLoader {
         }
         return settings;
     }
+
+    // simple sanity check
+    public boolean settingsSanityCheck(Settings settings) throws IllegalAccessException {
+        if (settings.getTimeout() <= 0)
+            return false;
+        if (settings.getAlarmLevel() <= 0)
+            return false;
+        if (settings.getMax() <= 0)
+            return false;
+        if (settings.getVersion() == null)
+            return false;
+        if (settings.getOutput() == null)
+            return false;
+        return true;
+    }
+
 }
