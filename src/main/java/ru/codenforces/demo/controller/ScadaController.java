@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2023.
+ * Egor Adonev
+ */
+
 package ru.codenforces.demo.controller;
 
 import org.springframework.http.HttpStatus;

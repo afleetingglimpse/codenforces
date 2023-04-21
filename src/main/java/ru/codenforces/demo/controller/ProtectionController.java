@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2023.
+ * Kirill Ustimenko
+ */
+
 package ru.codenforces.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;

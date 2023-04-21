@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2023.
+ * Kirill Ustimenko
+ */
+
 package ru.codenforces.demo.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
