@@ -8,17 +8,13 @@ package ru.codenforces.demo.model;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.codenforces.demo.model.Data;
 import ru.codenforces.demo.service.DeviceMsgSender;
-import ru.codenforces.demo.service.ProtectionService;
 import ru.codenforces.demo.service.SettingsManager;
 
 import java.security.SecureRandom;
-import java.lang.Object;
 
 @Component
 public class Device {
-//	private static String KEY = "12345";
 	public Event event = new Event();
 	@Autowired
 	private DeviceMsgSender deviceMsgSender;
