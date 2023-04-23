@@ -54,6 +54,8 @@ public class DeviceController {
         LOGGER.log(Level.INFO, "=================== STOPPING ==================");
         device.event.set();
         try {
+            LOGGER.log(Level.INFO, "==================== STOPPING ====================");
+            device.event.set();
             return new ResponseEntity<>(HttpStatus.OK);
         }
         catch (Exception e) {
@@ -105,6 +107,7 @@ public class DeviceController {
         try {
             int sensorValue = sensorData.getValue();
             Data data = new Data();
+            data.setValue(sensorValue);
             if (sensorValue > threshold) {
                 LOGGER.severe(String.format("Alarm with level %d", sensorValue));
                 data.setStatus(true);
@@ -112,7 +115,6 @@ public class DeviceController {
             }
             else {
                 data.setOperation("send_data");
-                data.setValue(sensorValue);
                 deviceMsgSender.sendDigitalData(data);
                 deviceMsgSender.sendAnalogData(data);
             }
