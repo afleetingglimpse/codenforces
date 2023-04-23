@@ -33,7 +33,7 @@ public class DeviceMsgSender {
                 .build();
         try {
             client.send(request, HttpResponse.BodyHandlers.ofString());
-            LOGGER.warning("Request sent by DeviceMsgSender.sendAnalogData");
+//            LOGGER.info("Request sent by DeviceMsgSender.sendAnalogData");
         }
         catch (IOException | InterruptedException e) {
             LOGGER.warning(Arrays.toString(e.getStackTrace()));
@@ -79,7 +79,7 @@ public class DeviceMsgSender {
                 .build();
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            LOGGER.warning("Request sent by DeviceMsgSender.sendDigitalData");
+//            LOGGER.info("Request sent by DeviceMsgSender.sendDigitalData");
         }
         catch (IOException | InterruptedException e) {
             LOGGER.warning(Arrays.toString(e.getStackTrace()));

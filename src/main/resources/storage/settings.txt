@@ -1,5 +1,5 @@
 {
-    "timeout" : 2,
+    "timeout" : 4,
     "max" : 20,
     "alarmLevel" : 15,
     "output" : "http://172.17.0.1:6077/",

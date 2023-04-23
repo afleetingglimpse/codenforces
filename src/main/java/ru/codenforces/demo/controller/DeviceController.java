@@ -11,18 +11,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.config.Task;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.codenforces.demo.model.*;
 import ru.codenforces.demo.service.DeviceMsgSender;
 import ru.codenforces.demo.service.KeyHandler;
 import ru.codenforces.demo.service.SettingsManager;
 
 import java.util.Arrays;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.lang.Runnable;
@@ -54,9 +49,9 @@ public class DeviceController {
     public static final Logger LOGGER = Logger.getLogger(DeviceMsgSender.class.getName());
 
 
-    @PostMapping("/stop") // later
+    @GetMapping("/stop") // later
     public ResponseEntity<?> handleStopRequest() {
-        LOGGER.log(Level.INFO, "==================== STOPPING ====================");
+        LOGGER.log(Level.INFO, "=================== STOPPING ==================");
         device.event.set();
         try {
             return new ResponseEntity<>(HttpStatus.OK);
@@ -67,11 +62,11 @@ public class DeviceController {
         }
     }
 
-    @PostMapping("/start")
+    @GetMapping("/start")
     public ResponseEntity<?> handleStartRequest() {
 
         try {
-            device.event.wait();
+            device.event = new Event();
             Settings settings = settingsManager.loadSettings();
             if (!settingsManager.settingsSanityCheck(settings)) {
                 device.event.set();
@@ -86,32 +81,20 @@ public class DeviceController {
             LOGGER.info(String.format("Loaded version: %s", settings.getVersion()));
             String key = keyHandler.loadKey();
             int lvl = settings.getAlarmLevel();
-            ExecutorService executor = Executors.newFixedThreadPool(3);
-            executor.submit(() -> {
-                new Task(()-> {
-                    try {
-                        device.cron((int) (3 * settings.getTimeout() + 1));
-                    } catch (JsonProcessingException e) {
-                        LOGGER.severe(Arrays.toString(e.getStackTrace()));
-                    } catch (InterruptedException e) {
-                        LOGGER.severe(Arrays.toString(e.getStackTrace()));
-                    } catch (IllegalAccessException e) {
-                        LOGGER.severe(Arrays.toString(e.getStackTrace()));
-                    }
-                });
-            });
-//            old_hash = md5(NEW_FW_PATHNAME)
-//            subprocess.call('cp /storage/new.txt /storage/old.txt', shell=True)
-//            new_hash = md5(NEW_FW_PATHNAME)
-//            if old_hash != new_hash:
-//            print("[rewriting] error in sources found")
+            final Runnable runnable = () -> {
+                        try {
+                            device.cron((int) (3 * settings.getTimeout() + 1));
+                        } catch (JsonProcessingException | InterruptedException | IllegalAccessException e) {
+                            LOGGER.severe(Arrays.toString(e.getStackTrace()));
+                        }
+            };
+            Thread th = new Thread(runnable);
+            th.start();
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (IllegalAccessException e) {
             LOGGER.warning("Exception raised in DeviceController.handleStartRequest");
             LOGGER.warning(Arrays.toString(e.getStackTrace()));
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (InterruptedException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
@@ -131,9 +114,7 @@ public class DeviceController {
                 data.setOperation("send_data");
                 data.setValue(sensorValue);
                 deviceMsgSender.sendDigitalData(data);
-                // LOGGER.info("Data sent to digital port");
                 deviceMsgSender.sendAnalogData(data);
-                // LOGGER.info("Data sent to analog port");
             }
         } catch (JsonProcessingException e) {
                     LOGGER.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));

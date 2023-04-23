@@ -8,6 +8,7 @@ package ru.codenforces.demo.model;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.codenforces.demo.controller.DeviceController;
 import ru.codenforces.demo.service.DeviceMsgSender;
 import ru.codenforces.demo.service.SettingsManager;
 
@@ -15,7 +16,7 @@ import java.security.SecureRandom;
 
 @Component
 public class Device {
-	public Event event = new Event();
+	public Event event;
 	@Autowired
 	private DeviceMsgSender deviceMsgSender;
 	@Autowired
@@ -24,12 +25,12 @@ public class Device {
 		Settings settings = settingsManager.loadSettings();
 		settingsManager.settingsSanityCheck(settings);
 		while (!event.isSet()){
-			Thread thread = Thread.currentThread();
-			thread.sleep(t);
+			Thread.sleep(t);
 			SecureRandom random = new SecureRandom();
 			int key = random.nextInt();
 			Data secondDat = new Data("send_diagnostic");
-			//"Checked with status: "
+
+			//Checked with status:
 			secondDat.setStatus(true);
 			deviceMsgSender.sendDigitalData(secondDat);
 			Data firstDat = new Data("send_key");
