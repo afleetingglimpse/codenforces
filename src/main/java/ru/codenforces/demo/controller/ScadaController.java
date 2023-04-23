@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2023.
+ * Egor Adonev
+ */
+
 package ru.codenforces.demo.controller;
 
 import org.springframework.http.HttpStatus;
@@ -16,8 +21,6 @@ public class ScadaController {
     public ResponseEntity<?> addDigitalData(@RequestBody Data dData) {
         try{
             int dataValue = dData.getValue();
-//            dData.setOperation("data_d");
-//            dData.setStatus(true);
             return new ResponseEntity<>(dData, HttpStatus.OK);
         } catch (Exception e){
             return new ResponseEntity<>(new CustomError(HttpStatus.BAD_REQUEST.value(), "Digital Data value is null(check JSON attribute name)"),HttpStatus.BAD_REQUEST);
@@ -28,8 +31,6 @@ public class ScadaController {
     public ResponseEntity<?> addAnalogData(@RequestBody Data aData) {
         try{
             int dataValue = aData.getValue();
-//            aData.setOperation("data_a");
-//            aData.setStatus(true);
             return new ResponseEntity<>(aData, HttpStatus.OK);
         } catch (Exception e){
             return new ResponseEntity<>(new CustomError(HttpStatus.BAD_REQUEST.value(), "Analog Data value is null(check JSON attribute name)"),HttpStatus.BAD_REQUEST);
@@ -41,8 +42,6 @@ public class ScadaController {
         try{
             int dataValue = diagData.getValue();
             // с девайса отправляем
-//            diagData.setOperation("diagnostic");
-//            diagData.setStatus(true);
             return new ResponseEntity<>(diagData, HttpStatus.OK);
         } catch (Exception e){
             return new ResponseEntity<>(new CustomError(HttpStatus.BAD_REQUEST.value(), "Diagnostic Data value is null(check JSON attribute name)"),HttpStatus.BAD_REQUEST);
@@ -54,8 +53,6 @@ public class ScadaController {
         try{
             int dataValue = keyData.getValue();
             // с девайса отправляем
-//            diagData.setOperation("key");
-//            diagData.setStatus(true);
             return new ResponseEntity<>(keyData, HttpStatus.OK);
         } catch (Exception e){
             return new ResponseEntity<>(new CustomError(HttpStatus.BAD_REQUEST.value(), "Key Data value is null(check JSON attribute name)"),HttpStatus.BAD_REQUEST);
@@ -66,8 +63,6 @@ public class ScadaController {
         try{
             int dataValue = errorData.getValue();
             // с девайса отправляем
-//            diagData.setOperation("error");
-//            diagData.setStatus(true);
             return new ResponseEntity<>(errorData, HttpStatus.OK);
         } catch (Exception e){
             return new ResponseEntity<>(new CustomError(HttpStatus.BAD_REQUEST.value(), "Error Data value is null(check JSON attribute name)"),HttpStatus.BAD_REQUEST);

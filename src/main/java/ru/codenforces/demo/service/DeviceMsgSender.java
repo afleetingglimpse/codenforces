@@ -17,7 +17,7 @@ import static ru.codenforces.demo.Utils.getProperty;
 import static java.net.URI.create;
 @Service
 public class DeviceMsgSender {
-    public static final Logger LOGGER = Logger.getLogger(DeviceMsgSender.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(DeviceMsgSender.class.getName());
     private static final String ANALOG_PORT_URI = getProperty("analog.uri");
     private static final String PROTECTION_URI = getProperty("protection.uri");
     private static final String DIGITAL_PORT_URI = getProperty("main.uri");
@@ -33,7 +33,7 @@ public class DeviceMsgSender {
                 .build();
         try {
             client.send(request, HttpResponse.BodyHandlers.ofString());
-            LOGGER.warning("Request sent by DeviceMsgSender.sendAnalogData");
+//            LOGGER.info("Request sent by DeviceMsgSender.sendAnalogData");
         }
         catch (IOException | InterruptedException e) {
             LOGGER.warning(Arrays.toString(e.getStackTrace()));
@@ -79,7 +79,7 @@ public class DeviceMsgSender {
                 .build();
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            LOGGER.warning("Request sent by DeviceMsgSender.sendDigitalData");
+//            LOGGER.info("Request sent by DeviceMsgSender.sendDigitalData");
         }
         catch (IOException | InterruptedException e) {
             LOGGER.warning(Arrays.toString(e.getStackTrace()));
