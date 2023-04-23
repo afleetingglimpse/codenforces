@@ -18,13 +18,32 @@ import ru.codenforces.demo.security.JwtAuthFilter;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfiguration {
 
-    private final JwtAuthFilter jwtAuthFilter;
-    private final UserRepository userRepository;
+    private  JwtAuthFilter jwtAuthFilter;
+    private  UserRepository userRepository;
 
-    //private final AuthenticationProvider authenticationProvider;
+    public JwtAuthFilter getJwtAuthFilter() {
+        return jwtAuthFilter;
+    }
+
+    public void setJwtAuthFilter(JwtAuthFilter jwtAuthFilter) {
+        this.jwtAuthFilter = jwtAuthFilter;
+    }
+
+    public UserRepository getUserRepository() {
+        return userRepository;
+    }
+
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public SecurityConfiguration(JwtAuthFilter jwtAuthFilter, UserRepository userRepository) {
+        this.jwtAuthFilter = jwtAuthFilter;
+        this.userRepository = userRepository;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         DaoAuthenticationProvider authenticationProvider =  new DaoAuthenticationProvider();

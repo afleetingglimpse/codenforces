@@ -15,7 +15,6 @@ import ru.codenforces.demo.service.AuthenticationService;
 
 @RestController
 @RequestMapping("/auth")
-@RequiredArgsConstructor
 public class AuthenticationController {
 
     @Autowired

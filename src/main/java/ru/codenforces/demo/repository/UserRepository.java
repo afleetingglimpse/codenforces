@@ -3,7 +3,6 @@ package ru.codenforces.demo.repository;
 import org.springframework.stereotype.Component;
 import ru.codenforces.demo.model.User;
 
-// тут по идее надо к БД подключать, но мне лень для двух юзеров это делать
 @Component
 public class UserRepository {
 

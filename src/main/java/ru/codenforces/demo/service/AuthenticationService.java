@@ -2,8 +2,10 @@ package ru.codenforces.demo.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,7 +18,6 @@ import ru.codenforces.demo.model.User;
 import ru.codenforces.demo.repository.UserRepository;
 
 @Service
-@RequiredArgsConstructor
 public class AuthenticationService {
 
     @Autowired
@@ -29,16 +30,15 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public AuthenticationResponse register(RegisterRequest request) {
-        var user = User.builder()
-                .name(request.getName())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role("technical")
-                .build();
+        var user = new User();
+        user.setName(request.getName());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole("technical");
         //userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
+        AuthenticationResponse ar = new AuthenticationResponse();
+        ar.setToken(jwtToken);
+        return ar;
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -50,8 +50,9 @@ public class AuthenticationService {
         );
         var user = userRepository.findByName(request.getName());
         var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
+
+        AuthenticationResponse authResp =new AuthenticationResponse();
+        authResp.setToken(jwtToken);
+        return authResp;
     }
 }
