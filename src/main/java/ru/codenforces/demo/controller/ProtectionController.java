@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 @RestController
 @RequestMapping(path = "/protection_alarm")
 public class ProtectionController {
-    public static final Logger LOGGER = Logger.getLogger(DeviceMsgSender.class.getName());
+    public static final Logger LOGGER = Logger.getLogger(ProtectionController.class.getName());
 
     @Autowired
     private ProtectionService protectionService;

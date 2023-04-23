@@ -23,9 +23,7 @@ import static java.net.URI.create;
 public class Sensor {
     private static final long DELIVERY_INTERVAL_MILLISEC = 500;
     private static final int SIGNAL_RANGE = 20;
-    // тут кринж
-    //"http://localhost:8080/signals";
-    public static final Logger LOGGER = Logger.getLogger(DeviceMsgSender.class.getName());
+    public static final Logger LOGGER = Logger.getLogger(Sensor.class.getName());
     private static final String URI = Utils.getProperty("sensor.uri");
 
     public static void main(String[] args) throws InterruptedException, JsonProcessingException {
