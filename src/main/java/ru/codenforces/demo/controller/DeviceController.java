@@ -54,11 +54,11 @@ public class DeviceController {
     public static final Logger LOGGER = Logger.getLogger(DeviceMsgSender.class.getName());
 
 
-    @PostMapping("/stop") // later
+    @PostMapping("/stop")
     public ResponseEntity<?> handleStopRequest() {
-        LOGGER.log(Level.INFO, "==================== STOPPING ====================");
-        device.event.set();
         try {
+            LOGGER.log(Level.INFO, "==================== STOPPING ====================");
+            device.event.set();
             return new ResponseEntity<>(HttpStatus.OK);
         }
         catch (Exception e) {
@@ -71,7 +71,7 @@ public class DeviceController {
     public ResponseEntity<?> handleStartRequest() {
 
         try {
-            device.event.wait();
+            //device.event.wait();
             Settings settings = settingsManager.loadSettings();
             if (!settingsManager.settingsSanityCheck(settings)) {
                 device.event.set();
@@ -110,8 +110,8 @@ public class DeviceController {
             LOGGER.warning("Exception raised in DeviceController.handleStartRequest");
             LOGGER.warning(Arrays.toString(e.getStackTrace()));
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (InterruptedException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        //} catch (InterruptedException e) {
+        //    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
@@ -122,6 +122,7 @@ public class DeviceController {
         try {
             int sensorValue = sensorData.getValue();
             Data data = new Data();
+            data.setValue(sensorValue);
             if (sensorValue > threshold) {
                 LOGGER.severe(String.format("Alarm with level %d", sensorValue));
                 data.setStatus(true);
@@ -129,7 +130,6 @@ public class DeviceController {
             }
             else {
                 data.setOperation("send_data");
-                data.setValue(sensorValue);
                 deviceMsgSender.sendDigitalData(data);
                 // LOGGER.info("Data sent to digital port");
                 deviceMsgSender.sendAnalogData(data);
